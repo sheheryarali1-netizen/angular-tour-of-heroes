@@ -17,4 +17,12 @@ export class HeroService {
 
     return heroes;
   }
+
+  public getHero(id: number) {
+    const hero = HEROES.find((hero) => hero.id === id);
+
+    this.messageService.add(`Hero loaded ID: ${id}`);
+
+    return of(hero);
+  }
 }
