@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { catchError, Observable, of, tap } from 'rxjs';
 
-import { HEROES } from './data';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Hero } from './types';
@@ -56,6 +55,21 @@ export class HeroService {
         tap(() => this.log(`Deleted hero ID: ${id}`)),
         catchError(this.handleError<Hero>('deleteHero')),
       );
+  }
+
+  public searchHeroes(value: string) {
+    if (!value.trim()) return of([]);
+
+    return this.http.get<Hero[]>(`${this.apiUrl}?name=${value}`).pipe(
+      tap((result) =>
+        this.log(
+          result.length
+            ? `Found heroes matching ${value}`
+            : `No heroes found matching ${value}`,
+        ),
+      ),
+      catchError(this.handleError<Hero[]>('searchHeroes', [])),
+    );
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
